@@ -1,4 +1,6 @@
+
 import { NAV_ITEMS } from '../../data/editorialData';
+import { useTheme } from '../../hooks/useTheme';
 import './Header.css';
 
 interface HeaderProps {
@@ -7,6 +9,8 @@ interface HeaderProps {
 }
 
 export function Header({ activeNav, onSelectNav }: HeaderProps) {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <header className="site-header">
       <div className="site-header-top">
@@ -33,6 +37,7 @@ export function Header({ activeNav, onSelectNav }: HeaderProps) {
           <ul className="site-nav-list">
             {NAV_ITEMS.map((item) => {
               const isActive = activeNav === item.id;
+
               return (
                 <li key={item.id} className="site-nav-item">
                   <a
@@ -48,6 +53,18 @@ export function Header({ activeNav, onSelectNav }: HeaderProps) {
             })}
           </ul>
         </nav>
+
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label={
+            theme === 'light' ? 'Включить тёмную тему' : 'Включить светлую тему'
+          }
+          title={theme === 'light' ? 'Тёмная тема' : 'Светлая тема'}
+        >
+          <span aria-hidden="true">{theme === 'light' ? '☾' : '☀'}</span>
+        </button>
       </div>
     </header>
   );

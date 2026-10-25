@@ -703,11 +703,12 @@ export function CatalogPage({ onSelectMovie }: CatalogPageProps) {
             })}
           </div>
 
+          
           {/* Редакционная пагинация */}
           {totalPages > 1 && (
             <nav
               className="catalog-pagination"
-              aria-label="Навигация по полосам каталога"
+              aria-label="Навигация по страницам каталога"
             >
               <button
                 type="button"
@@ -715,12 +716,98 @@ export function CatalogPage({ onSelectMovie }: CatalogPageProps) {
                 disabled={page <= 1}
                 onClick={() => handlePageChange(page - 1)}
               >
-                ← Предыдущая полоса
+                ← Назад
               </button>
 
-              <span className="catalog-page-indicator">
-                Полоса <strong>{page}</strong> из <strong>{totalPages}</strong>
-              </span>
+              <div className="catalog-pagination-center">
+                <div className="catalog-page-numbers">
+                  {Array.from(
+                    new Set([
+                      1,
+                      ...(page > 3 ? [page - 2, page - 1] : []),
+                      page,
+                      ...(page < totalPages - 2
+                        ? [page + 1, page + 2]
+                        : []),
+                      totalPages,
+                    ])
+                  )
+                    .filter((number) => number >= 1 && number <= totalPages)
+                    .sort((a, b) => a - b)
+                    .map((number, index, numbers) => (
+                      <span
+                        className="catalog-page-number-wrap"
+                        key={number}
+                      >
+                        {index > 0 &&
+                          number - numbers[index - 1] > 1 && (
+                            <span
+                              className="catalog-page-ellipsis"
+                              aria-hidden="true"
+                            >
+                              …
+                            </span>
+                          )}
+                        <button
+                          type="button"
+                          className={`catalog-page-number ${
+                            number === page ? 'is-active' : ''
+                          }`}
+                          aria-current={number === page ? 'page' : undefined}
+                          aria-label={`Страница ${number}`}
+                          onClick={() => handlePageChange(number)}
+                        >
+                          {number}
+                        </button>
+                      </span>
+                    ))}
+                </div>
+
+                <form
+                  className="catalog-page-jump"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    const form = event.currentTarget;
+                    const input = form.elements.namedItem(
+                      'pageNumber'
+                    ) as HTMLInputElement | null;
+                    const requestedPage = Number(input?.value);
+
+                    if (
+                      Number.isInteger(requestedPage) &&
+                      requestedPage >= 1 &&
+                      requestedPage <= totalPages
+                    ) {
+                      handlePageChange(requestedPage);
+                    } else if (input) {
+                      input.setCustomValidity(
+                        `Введите число от 1 до ${totalPages}`
+                      );
+                      input.reportValidity();
+                    }
+                  }}
+                >
+                  <label htmlFor="catalog-page-number">
+                    Перейти к странице
+                  </label>
+                  <input
+                    id="catalog-page-number"
+                    name="pageNumber"
+                    type="number"
+                    min={1}
+                    max={totalPages}
+                    step={1}
+                    placeholder={String(page)}
+                    aria-label="Номер страницы"
+                    onChange={(event) =>
+                      event.currentTarget.setCustomValidity('')
+                    }
+                  />
+                  <button type="submit" className="catalog-page-btn">
+                    Перейти
+                  </button>
+                </form>
+              </div>
 
               <button
                 type="button"
@@ -728,7 +815,7 @@ export function CatalogPage({ onSelectMovie }: CatalogPageProps) {
                 disabled={page >= totalPages}
                 onClick={() => handlePageChange(page + 1)}
               >
-                Следующая полоса →
+                Вперёд →
               </button>
             </nav>
           )}

@@ -1,9 +1,16 @@
+
 :root {
+  color-scheme: light;
+
   --color-bg: #F3EFE6;
   --color-text: #201F1D;
   --color-accent: #A83E35;
   --color-divider: #D9D2C6;
   --color-muted: #625D55;
+
+  --color-surface: #EAE4D9;
+  --color-surface-hover: #E2DACD;
+  --color-accent-soft: #E9D6CE;
 
   --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
@@ -12,7 +19,6 @@
   --container-max: 1320px;
   --container-pad: clamp(1.25rem, 4vw, 3.5rem);
 
-  color-scheme: light;
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
@@ -22,6 +28,20 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: #151413;
+  --color-text: #F0E9DE;
+  --color-accent: #C56B5D;
+  --color-divider: #39332E;
+  --color-muted: #B5AA9D;
+
+  --color-surface: #211F1D;
+  --color-surface-hover: #2C2825;
+  --color-accent-soft: #432923;
 }
 
 *,
@@ -40,6 +60,9 @@ body {
   min-height: 100vh;
   background-color: var(--color-bg);
   color: var(--color-text);
+  transition:
+    background-color 220ms ease,
+    color 220ms ease;
 }
 
 #root {
