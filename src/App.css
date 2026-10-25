@@ -1,0 +1,11 @@
+.editorial-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.editorial-main {
+  flex: 1;
+}

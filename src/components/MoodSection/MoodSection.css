@@ -1,0 +1,207 @@
+.mood-section {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: clamp(3.5rem, 7vw, 6.5rem) var(--container-pad);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.mood-editorial-layout {
+  display: grid;
+  grid-template-columns: 1.55fr 0.85fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: start;
+}
+
+.mood-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-top: 1px solid var(--color-divider);
+  border-left: 1px solid var(--color-divider);
+}
+
+.mood-item {
+  padding: clamp(1.5rem, 2.8vw, 2.25rem);
+  border-right: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  cursor: pointer;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.mood-item:hover,
+.mood-item.is-selected {
+  background-color: rgba(217, 210, 198, 0.25);
+}
+
+.mood-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.mood-item-number {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--color-accent);
+}
+
+.mood-item-accent-note {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.mood-item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.mood-item-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.65rem, 2.3vw, 2.15rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--color-text);
+  transition: color 0.25s ease;
+}
+
+.mood-item.is-selected .mood-item-title {
+  color: var(--color-accent);
+}
+
+.mood-item-subtitle {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  color: var(--color-muted);
+}
+
+.mood-item-description {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.66;
+  color: var(--color-text);
+}
+
+.mood-item-footer {
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--color-divider);
+}
+
+.mood-item-directors {
+  font-family: var(--font-sans);
+  font-size: 0.73rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.mood-editorial-aside {
+  position: sticky;
+  top: 2rem;
+  padding: clamp(1.75rem, 3vw, 2.5rem);
+  border: 1px solid var(--color-divider);
+  background-color: rgba(217, 210, 198, 0.18);
+}
+
+.mood-aside-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mood-aside-label {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.mood-aside-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 3vw, 2.65rem);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--color-text);
+}
+
+.mood-aside-subtitle {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--color-muted);
+}
+
+.mood-aside-divider {
+  width: 3rem;
+  height: 1px;
+  background-color: var(--color-accent);
+  margin: 0.25rem 0;
+}
+
+.mood-aside-text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.72;
+  color: var(--color-text);
+}
+
+.mood-aside-meta {
+  margin-top: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-divider);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.mood-aside-meta-key {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.mood-aside-meta-val {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+@media (max-width: 1024px) {
+  .mood-editorial-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mood-editorial-aside {
+    position: static;
+  }
+}
+
+@media (max-width: 680px) {
+  .mood-list {
+    grid-template-columns: 1fr;
+  }
+}

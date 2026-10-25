@@ -1,0 +1,467 @@
+.movie-page-section {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: clamp(2rem, 4.5vw, 4rem) var(--container-pad)
+    clamp(4rem, 7vw, 6.5rem);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.movie-page-topbar {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-bottom: 1.25rem;
+  margin-bottom: clamp(2.25rem, 4.5vw, 3.75rem);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.movie-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-decoration: none;
+  transition:
+    color 0.25s ease,
+    gap 0.25s ease;
+}
+
+.movie-back-button:hover {
+  color: var(--color-accent);
+  gap: 0.8rem;
+}
+
+.movie-back-arrow {
+  color: var(--color-accent);
+  font-size: 0.95rem;
+}
+
+.movie-page-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 380px) 1fr;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.movie-poster-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  position: sticky;
+  top: 2rem;
+}
+
+.movie-poster-frame {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+}
+
+.movie-poster-caption {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-divider);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--color-muted);
+}
+
+.movie-poster-caption-code {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.movie-content-column {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.75rem, 3.2vw, 2.5rem);
+  min-width: 0;
+}
+
+.movie-header-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.movie-header-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.movie-header-year {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.movie-header-rating {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.18rem 0.6rem;
+  border: 1px solid var(--color-divider);
+  background-color: rgba(217, 210, 198, 0.22);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--color-accent);
+}
+
+.movie-header-votes {
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--color-muted);
+}
+
+.movie-header-runtime {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.movie-page-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 4.8vw, 4.25rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.movie-page-original-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  line-height: 1.3;
+  color: var(--color-muted);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.movie-page-tagline {
+  margin: 0.35rem 0 0;
+  padding-left: 1rem;
+  border-left: 1px solid var(--color-accent);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.45;
+  color: var(--color-muted);
+}
+
+.movie-genres-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.movie-genre-tag {
+  padding: 0.26rem 0.75rem;
+  border: 1px solid var(--color-divider);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background-color: rgba(217, 210, 198, 0.16);
+}
+
+/* Паспорт фильма (техническая сетка) */
+.movie-specs-grid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-top: 1px solid var(--color-divider);
+  border-left: 1px solid var(--color-divider);
+}
+
+.movie-spec-item {
+  padding: 0.9rem 1.15rem;
+  border-right: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.movie-spec-label {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.movie-spec-value {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.18rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-text);
+  overflow-wrap: break-word;
+}
+
+/* Секции полного описания и актёров */
+.movie-synopsis-section,
+.movie-cast-section {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-divider);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.movie-section-label {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.movie-synopsis-text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 1.15vw, 1.08rem);
+  line-height: 1.78;
+  color: var(--color-text);
+  max-width: 46rem;
+  white-space: pre-line;
+  overflow-wrap: break-word;
+}
+
+.movie-synopsis-text.is-empty {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--color-muted);
+}
+
+.movie-cast-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 2rem;
+  row-gap: 0.75rem;
+}
+
+.movie-cast-item {
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--color-divider);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.movie-cast-name {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.movie-cast-role {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+/* Скелетон загрузки страницы фильма */
+@keyframes movieSkeletonPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+.movie-page-grid.is-loading {
+  animation: movieSkeletonPulse 1.8s ease-in-out infinite;
+}
+
+.movie-skeleton-box {
+  background-color: #e6e0d4;
+  border: 1px solid var(--color-divider);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.movie-skeleton-badge {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.movie-skeleton-line {
+  background-color: #e2dcd0;
+}
+
+.movie-skeleton-kicker {
+  width: 35%;
+  height: 0.9rem;
+}
+
+.movie-skeleton-heading {
+  width: 75%;
+  height: 2.8rem;
+}
+
+.movie-skeleton-subheading {
+  width: 48%;
+  height: 1.25rem;
+}
+
+.movie-skeleton-specs {
+  width: 100%;
+  height: 7.5rem;
+  background-color: #e6e0d4;
+  border: 1px solid var(--color-divider);
+}
+
+.movie-skeleton-paragraph {
+  width: 100%;
+  height: 8.5rem;
+  background-color: #e2dcd0;
+}
+
+/* Блок ошибки / 404 */
+.movie-status-box {
+  padding: clamp(2rem, 4vw, 3rem);
+  border: 1px solid var(--color-divider);
+  border-left: 3px solid var(--color-accent);
+  background-color: rgba(217, 210, 198, 0.16);
+  max-width: 44rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.movie-status-code {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.movie-status-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  font-weight: 400;
+  line-height: 1.12;
+  color: var(--color-text);
+}
+
+.movie-status-message {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+
+.movie-status-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.movie-action-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 1.25rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background-color: transparent;
+  border: 1px solid var(--color-text);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.movie-action-btn:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.movie-action-btn.is-secondary {
+  border-color: var(--color-divider);
+  color: var(--color-text);
+}
+
+/* Адаптивность для планшетов и мобильных устройств */
+@media (max-width: 920px) {
+  .movie-page-grid {
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+  }
+
+  .movie-poster-column {
+    position: static;
+    max-width: 340px;
+  }
+}
+
+@media (max-width: 600px) {
+  .movie-page-topbar {
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .movie-poster-column {
+    max-width: 100%;
+  }
+
+  .movie-specs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .movie-cast-list {
+    grid-template-columns: 1fr;
+  }
+}
