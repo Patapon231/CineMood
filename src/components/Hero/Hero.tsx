@@ -1,8 +1,13 @@
 import { HERO_DATA } from '../../data/editorialData';
 import { CinematicImage } from '../CinematicImage/CinematicImage';
+import { SurprisePanel } from '../SurprisePanel/SurprisePanel';
 import './Hero.css';
 
-export function Hero() {
+interface HeroProps {
+  onSelectMovie: (movieId: number) => void;
+}
+
+export function Hero({ onSelectMovie }: HeroProps) {
   return (
     <section id="journal" className="hero-section" aria-labelledby="hero-heading">
       <div className="hero-editorial-bar">
@@ -28,6 +33,8 @@ export function Hero() {
                 ↓
               </span>
             </a>
+
+            <SurprisePanel onSelectMovie={onSelectMovie} />
           </div>
         </div>
 

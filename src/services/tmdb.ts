@@ -770,6 +770,184 @@ export async function getCatalogMovies(
   };
 }
 
+/* ------------------------------------------------------------------ */
+/* «Удиви меня»: широкая случайная выборка через /discover/movie       */
+/* ------------------------------------------------------------------ */
+
+type SurpriseSort = 'popularity.desc' | 'vote_count.desc' | 'vote_average.desc';
+
+interface SurpriseEra {
+  from: number;
+  to: number | null; // null — до текущей даты
+}
+
+/**
+ * Эпохи выбираются равновероятно, поэтому старое кино получает
+ * такой же шанс попасть в выборку, как и новинки последних лет.
+ */
+const SURPRISE_ERAS: SurpriseEra[] = [
+  { from: 1920, to: 1949 },
+  { from: 1950, to: 1969 },
+  { from: 1970, to: 1984 },
+  { from: 1985, to: 1999 },
+  { from: 2000, to: 2009 },
+  { from: 2010, to: null },
+];
+
+const SURPRISE_SORTS: SurpriseSort[] = [
+  'popularity.desc',
+  'vote_count.desc',
+  'vote_average.desc',
+];
+
+/** Сколько страниц запрашивается параллельно за один раунд. */
+const SURPRISE_REQUESTS_PER_ROUND = 2;
+/** Максимум раундов на одно нажатие — защищает от бесконечного цикла. */
+const SURPRISE_MAX_ROUNDS = 3;
+/** Глубина страниц, если общее число страниц для комбинации ещё неизвестно. */
+const SURPRISE_DEFAULT_PAGE_DEPTH = 8;
+/** Верхняя граница глубины, чтобы не уходить в пустые записи без данных. */
+const SURPRISE_MAX_PAGE_DEPTH = 30;
+
+/** Известное число страниц для комбинации эпоха + сортировка (кэш на сессию). */
+const surpriseTotalPagesCache = new Map<string, number>();
+
+export interface SurprisePickResult {
+  movie: TmdbMovie;
+  /** true, если все кандидаты уже были в истории и история была сброшена. */
+  historyWasReset: boolean;
+}
+
+function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function pickRandom<T>(items: readonly T[]): T {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function hasValidFullReleaseDate(movie: TmdbMovie): boolean {
+  const parsed = parseTmdbReleaseDate(movie.release_date);
+  return Boolean(parsed && parsed.month !== null && parsed.day !== null);
+}
+
+async function fetchSurpriseCandidates(
+  todayIso: string,
+  language: string,
+  signal?: AbortSignal
+): Promise<TmdbMovie[]> {
+  const era = pickRandom(SURPRISE_ERAS);
+  const sortBy = pickRandom(SURPRISE_SORTS);
+  const cacheKey = `${era.from}-${era.to ?? 'now'}:${sortBy}`;
+
+  const knownTotal = surpriseTotalPagesCache.get(cacheKey);
+  const maxPage = Math.max(
+    1,
+    Math.min(knownTotal ?? SURPRISE_DEFAULT_PAGE_DEPTH, SURPRISE_MAX_PAGE_DEPTH)
+  );
+  const page = randomInt(1, maxPage);
+
+  const eraEndIso = era.to !== null ? `${era.to}-12-31` : todayIso;
+  const releaseDateLte = eraEndIso < todayIso ? eraEndIso : todayIso;
+
+  const data = await requestTmdb<TmdbPaginatedResponse<TmdbMovieRaw>>(
+    '/discover/movie',
+    {
+      page,
+      language,
+      sort_by: sortBy,
+      'primary_release_date.gte': `${era.from}-01-01`,
+      'primary_release_date.lte': releaseDateLte,
+      // Мягкий порог только для сортировки по оценке, чтобы наверх не всплывали
+      // записи с одним голосом. Для остальных сортировок порога нет.
+      'vote_count.gte': sortBy === 'vote_average.desc' ? 50 : undefined,
+      include_adult: false,
+    },
+    signal
+  );
+
+  if (typeof data.total_pages === 'number' && data.total_pages > 0) {
+    surpriseTotalPagesCache.set(cacheKey, Math.min(data.total_pages, 500));
+  }
+
+  const rawResults = Array.isArray(data.results) ? data.results : [];
+  return rawResults
+    .map(normalizeMovie)
+    .filter(
+      (movie) =>
+        Boolean(movie.poster_path) &&
+        hasValidFullReleaseDate(movie) &&
+        isReleasedMovie(movie, todayIso)
+    );
+}
+
+/**
+ * Выбирает случайный фильм из широкой выборки TMDB: случайная эпоха,
+ * случайная сортировка и случайная страница (несколько запросов параллельно).
+ *
+ * Ограничение: результат случаен в пределах того, что TMDB отдаёт через
+ * /discover/movie (не глубже 500 страниц на запрос и только фильмы с
+ * постером и полной датой выхода), а не по всему мировому кинематографу.
+ *
+ * @param excludeIds ID недавно показанных фильмов, которые желательно не повторять.
+ */
+export async function getSurpriseMovie(
+  options: {
+    excludeIds?: readonly number[];
+    language?: string;
+    signal?: AbortSignal;
+  } = {}
+): Promise<SurprisePickResult> {
+  const language = options.language ?? DEFAULT_LANGUAGE;
+  const excluded = new Set(options.excludeIds ?? []);
+  const todayIso = getCurrentDateIso();
+
+  let pool: TmdbMovie[] = [];
+  let lastError: unknown = null;
+
+  for (let round = 0; round < SURPRISE_MAX_ROUNDS; round += 1) {
+    const settled = await Promise.allSettled(
+      Array.from({ length: SURPRISE_REQUESTS_PER_ROUND }, () =>
+        fetchSurpriseCandidates(todayIso, language, options.signal)
+      )
+    );
+
+    for (const outcome of settled) {
+      if (outcome.status === 'fulfilled') {
+        pool = pool.concat(outcome.value);
+      } else {
+        const reason: unknown = outcome.reason;
+        if (reason instanceof DOMException && reason.name === 'AbortError') {
+          throw reason;
+        }
+        lastError = reason;
+      }
+    }
+
+    pool = deduplicateMovies(pool);
+    const fresh = pool.filter((movie) => !excluded.has(movie.id));
+
+    if (fresh.length > 0) {
+      return { movie: pickRandom(fresh), historyWasReset: false };
+    }
+  }
+
+  // Новых кандидатов не нашлось: если выборка есть, но вся уже показана —
+  // сбрасываем историю и выбираем из имеющегося пула.
+  if (pool.length > 0) {
+    return { movie: pickRandom(pool), historyWasReset: true };
+  }
+
+  if (lastError instanceof TmdbServiceError) {
+    throw lastError;
+  }
+
+  throw new TmdbServiceError(
+    'Не удалось подобрать фильм: TMDB не вернул подходящих картин с постером и датой выхода.',
+    'INVALID_RESPONSE'
+  );
+}
+
 interface TmdbCrewRaw {
   id: number;
   name?: string;

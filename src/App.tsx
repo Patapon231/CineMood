@@ -143,7 +143,7 @@ function App() {
           <CatalogPage onSelectMovie={handleSelectMovie} />
         ) : (
           <>
-            <Hero />
+            <Hero onSelectMovie={handleSelectMovie} />
             <EditorialPicks onSelectMovie={handleSelectMovie} />
             <MoodSection />
           </>
